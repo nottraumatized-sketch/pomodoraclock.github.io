@@ -2,33 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Compact Pomodoro Timer</title>
+  <title>Pomodoro Timer</title>
   <style>
-    body { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background: linear-gradient(135deg, #f5f5f5, #ffe0e0);
-; font-family:sans-serif; }
+    body {
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      height:100vh; background:linear-gradient(135deg,#1e1e1e,#2c2c2c); font-family:sans-serif; color:#00aaff;
+    }
     svg { transform:rotate(-90deg); }
     circle { fill:none; stroke-width:10; }
-    #bg { stroke:#ddd; }
-    #progress { stroke:#ff4d4d; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
-    #time { position:absolute; font-size:1.5em; font-weight:bold; }
-    .controls { margin-top:15px; }
-    button { margin:3px; padding:6px 10px; font-size:0.9em; cursor:pointer; }
-    input { width:40px; text-align:center; margin-left:5px; }
+    #bg { stroke:#333; }
+    #progress { stroke:#a64dff; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
+    #time { position:absolute; font-size:1.8em; font-weight:bold; color:#00aaff; }
+    .controls { margin-top:20px; }
+    button { margin:3px; padding:6px 10px; font-size:1em; cursor:pointer; border:none; background:none; color:#00aaff; }
+    button:hover { color:#a64dff; }
+    input { width:50px; text-align:center; margin-left:5px; background:#222; color:#fff; border:none; border-radius:4px; }
   </style>
 </head>
 <body>
-  <div style="position:relative; width:150px; height:150px;">
-    <svg width="150" height="150">
-      <circle id="bg" cx="75" cy="75" r="65"/>
-      <circle id="progress" cx="75" cy="75" r="65"/>
+  <div style="position:relative; width:200px; height:200px;">
+    <svg width="200" height="200">
+      <circle id="bg" cx="100" cy="100" r="90"/>
+      <circle id="progress" cx="100" cy="100" r="90"/>
     </svg>
-    <div id="time" style="top:50%; left:50%; transform:translate(-50%,-50%);">25:00</div>
+    <div id="time" style="top:45%; left:50%; transform:translate(-50%,-50%);">25:00</div>
+    <div style="position:absolute; bottom:35%; left:50%; transform:translateX(-50%);">
+      <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
+      <button onclick="resetTimer()">⏹</button>
+    </div>
   </div>
 
   <div class="controls">
-    <button onclick="startTimer()">▶ Play</button>
-    <button onclick="pauseTimer()">⏸ Pause</button>
-    <button onclick="resetTimer()">⏹ Reset</button>
     <label>Min: <input type="number" id="minutesInput" value="25" min="1"></label>
   </div>
 
@@ -38,7 +42,8 @@
     let timer = null;
     const progress = document.getElementById("progress");
     const timeDisplay = document.getElementById("time");
-    const circumference = 2 * Math.PI * 65;
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const circumference = 2 * Math.PI * 90;
     progress.style.strokeDasharray = circumference;
 
     function updateDisplay() {
@@ -54,28 +59,37 @@
         remaining--;
         updateDisplay();
       } else {
-        let alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-        alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
+        playSound();
         clearInterval(timer);
+        timer = null;
+        playPauseBtn.textContent = "▶";
       }
     }
 
-    function startTimer() {
-      if (!timer) timer = setInterval(tick, 1000);
-    }
-
-    function pauseTimer() {
-      clearInterval(timer);
-      timer = null;
+    function toggleTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+        playPauseBtn.textContent = "▶";
+      } else {
+        timer = setInterval(tick, 1000);
+        playPauseBtn.textContent = "⏸";
+      }
     }
 
     function resetTimer() {
       clearInterval(timer);
       timer = null;
+      playPauseBtn.textContent = "▶";
       let minutes = parseInt(document.getElementById("minutesInput").value) || 25;
       duration = minutes * 60;
       remaining = duration;
       updateDisplay();
+    }
+
+    function playSound() {
+      let alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+      alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
     }
 
     resetTimer(); // initialize
