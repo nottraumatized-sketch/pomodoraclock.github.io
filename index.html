@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Responsive Pomodoro Timer</title>
+  <title>Pomodoro Timer (Black → Purple)</title>
   <style>
     html, body {
       margin:0;
@@ -15,20 +15,23 @@
       display:flex; flex-direction:column; justify-content:center; align-items:center;
       font-family:sans-serif; color:#00aaff;
     }
+
     .timer-container {
       position:relative;
       width:90vmin; height:90vmin;
       max-width:500px; max-height:500px;
     }
+
     svg { width:100%; height:100%; transform:rotate(-90deg); }
     circle { fill:none; stroke-width:4%; }
-    #bg { stroke:#444; }
+    #bg { stroke:#000; }          /* black base ring */
     #progress {
-      stroke:#a64dff;
+      stroke:#a64dff;             /* purple progress fill */
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
       filter: drop-shadow(0 0 20px #a64dff);
     }
+
     #time {
       position:absolute;
       top:40%; left:50%;
@@ -36,17 +39,20 @@
       font-size:8vmin;
       font-weight:bold; color:#00aaff;
     }
+
     .button-group {
       position:absolute;
       bottom:25%; left:50%;
       transform:translateX(-50%);
     }
+
     button {
       margin:5px; padding:8px 12px;
       font-size:6vmin;
       cursor:pointer; border:none; background:none; color:#00aaff;
     }
     button:hover { color:#a64dff; }
+
     .controls { margin-top:15px; }
     input {
       width:70px; text-align:center; margin-left:5px;
@@ -67,11 +73,13 @@
       <button onclick="resetTimer()">⏹</button>
     </div>
   </div>
+
   <div class="controls">
     <label>Min: <input type="number" id="minutesInput" value="50" min="1"></label>
   </div>
+
   <script>
-    let duration = 50 * 60;
+    let duration = 50 * 60; // default 50 minutes
     let remaining = duration;
     let timer = null;
     const progress = document.getElementById("progress");
@@ -79,13 +87,16 @@
     const playPauseBtn = document.getElementById("playPauseBtn");
     const circumference = 2 * Math.PI * 45;
     progress.style.strokeDasharray = circumference;
+
     function updateDisplay() {
       let minutes = Math.floor(remaining / 60);
       let seconds = remaining % 60;
       timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      let offset = circumference - (remaining / duration) * circumference;
+      // Inverted fill: grows purple over black
+      let offset = (remaining / duration) * circumference;
       progress.style.strokeDashoffset = offset;
     }
+
     function tick() {
       if (remaining > 0) {
         remaining--;
@@ -97,6 +108,7 @@
         playPauseBtn.textContent = "▶";
       }
     }
+
     function toggleTimer() {
       if (timer) {
         clearInterval(timer);
@@ -107,6 +119,7 @@
         playPauseBtn.textContent = "⏸";
       }
     }
+
     function resetTimer() {
       clearInterval(timer);
       timer = null;
@@ -116,16 +129,19 @@
       remaining = duration;
       updateDisplay();
     }
+
     function playSound() {
       let alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
       alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
     }
+
     document.getElementById("minutesInput").addEventListener("input", () => {
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
       remaining = duration;
       updateDisplay();
     });
+
     resetTimer();
   </script>
 </body>
