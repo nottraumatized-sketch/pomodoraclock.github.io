@@ -131,9 +131,9 @@
     }
 
     function playSound() {
-      let alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-      alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
-    }
+  let alarm = new Audio("f1radio.mp3");
+  alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
+}
 
     document.getElementById("minutesInput").addEventListener("input", () => {
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
