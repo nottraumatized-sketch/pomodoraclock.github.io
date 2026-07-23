@@ -88,6 +88,11 @@
     const circumference = 2 * Math.PI * 45;
     progress.style.strokeDasharray = circumference;
 
+    // Ask for notification permission once
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
     function updateDisplay() {
       let minutes = Math.floor(remaining / 60);
       let seconds = remaining % 60;
@@ -130,19 +135,19 @@
       updateDisplay();
     }
 
-function playSound() {
-  // Play your F1 radio sound
-  let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
-  alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
+    function playSound() {
+      // Play F1 radio sound hosted on GitHub
+      let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
+      alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
 
-  // Show desktop notification
-  if (Notification.permission === "granted") {
-    new Notification("⏱ Pomodoro finished!", {
-      body: "Time to take a break 🚦",
-      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Stopwatch_icon.svg/1024px-Stopwatch_icon.svg.png"
-    });
-  }
-}
+      // Show desktop notification
+      if (Notification.permission === "granted") {
+        new Notification("⏱ Pomodoro finished!", {
+          body: "Time to take a break 🚦",
+          icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Stopwatch_icon.svg/1024px-Stopwatch_icon.svg.png"
+        });
+      }
+    }
 
     document.getElementById("minutesInput").addEventListener("input", () => {
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
