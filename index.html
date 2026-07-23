@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <title>Responsive Transparent Pomodoro Timer</title>
   <style>
-    html, body {
+    html, body, iframe, embed, .notion-embed, .notion-page-content {
       margin:0;
       padding:0;
       height:100%;
-      overflow:hidden; /* no scroll bar */
-      background:transparent; /* force transparency */
+      overflow:hidden;
+      background:transparent !important; /* full transparency */
     }
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
@@ -29,7 +29,7 @@
       stroke:#a64dff;
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
-      filter: drop-shadow(0 0 20px #a64dff); /* glow effect */
+      filter: drop-shadow(0 0 20px #a64dff);
     }
 
     #time {
@@ -134,7 +134,6 @@
       alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
     }
 
-    // Auto-update when minutes input changes
     document.getElementById("minutesInput").addEventListener("input", () => {
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
@@ -142,7 +141,7 @@
       updateDisplay();
     });
 
-    resetTimer(); // initialize
+    resetTimer();
   </script>
 </body>
 </html>
