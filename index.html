@@ -8,50 +8,57 @@
       margin:0;
       padding:0;
       height:100%;
-      overflow:hidden; /* no scroll bar */
-      background:transparent !important; /* force transparency */
+      overflow:hidden;
+      background:transparent !important; /* full transparency */
     }
+    /* Ensures Notion embed frame stays transparent */
+    iframe, embed, .notion-embed, .notion-page-content {
+      background:transparent !important;
+    }
+
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
       font-family:sans-serif; color:#00aaff;
     }
+
     .timer-container {
       position:relative;
-      width:90vmin; /* scales with viewport */
-      height:90vmin;
-      max-width:500px; /* optional cap */
-      max-height:500px;
+      width:90vmin; height:90vmin;
+      max-width:500px; max-height:500px;
     }
+
     svg { width:100%; height:100%; transform:rotate(-90deg); }
-    circle { fill:none; stroke-width:4%; } /* stroke scales with size */
+    circle { fill:none; stroke-width:4%; }
     #bg { stroke:#444; }
     #progress {
       stroke:#a64dff;
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
-      filter: drop-shadow(0 0 20px #a64dff); /* stronger glow effect */
+      filter: drop-shadow(0 0 20px #a64dff); /* glow effect */
     }
+
     #time {
       position:absolute;
       top:40%; left:50%;
       transform:translate(-50%,-50%);
-      font-size:8vmin; /* scales with viewport */
+      font-size:8vmin;
       font-weight:bold; color:#00aaff;
     }
+
     .button-group {
       position:absolute;
       bottom:25%; left:50%;
       transform:translateX(-50%);
     }
+
     button {
       margin:5px; padding:8px 12px;
-      font-size:6vmin; /* scales with viewport */
+      font-size:6vmin;
       cursor:pointer; border:none; background:none; color:#00aaff;
     }
     button:hover { color:#a64dff; }
-    .controls {
-      margin-top:15px;
-    }
+
+    .controls { margin-top:15px; }
     input {
       width:70px; text-align:center; margin-left:5px;
       background:#111; color:#fff; border:none; border-radius:4px;
