@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Timer (Disappearing Arc)</title>
+  <title>Pomodoro Timer (Solid Arc)</title>
   <style>
     html, body {
       margin:0;
@@ -26,7 +26,7 @@
     circle { fill:none; stroke-width:4%; }
     #bg { stroke:transparent; }   /* no base ring */
     #progress {
-      stroke:url(#purpleGradient); /* gradient stroke */
+      stroke:#a64dff;             /* solid purple arc */
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
       filter: drop-shadow(0 0 20px #a64dff);
@@ -64,12 +64,6 @@
 <body>
   <div class="timer-container">
     <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="transparent"/>
-          <stop offset="100%" stop-color="#a64dff"/>
-        </linearGradient>
-      </defs>
       <circle id="bg" cx="50" cy="50" r="45"/>
       <circle id="progress" cx="50" cy="50" r="45"/>
     </svg>
