@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Timer (Black → Purple)</title>
+  <title>Pomodoro Timer (Transparent Base)</title>
   <style>
     html, body {
       margin:0;
@@ -24,9 +24,9 @@
 
     svg { width:100%; height:100%; transform:rotate(-90deg); }
     circle { fill:none; stroke-width:4%; }
-    #bg { stroke:#000; }          /* black base ring */
+    #bg { stroke:transparent; }   /* transparent base ring */
     #progress {
-      stroke:#a64dff;             /* purple progress fill */
+      stroke:#a64dff;             /* purple progress arc */
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
       filter: drop-shadow(0 0 20px #a64dff);
@@ -92,7 +92,7 @@
       let minutes = Math.floor(remaining / 60);
       let seconds = remaining % 60;
       timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      // Inverted fill: grows purple over black
+      // Inverted fill: purple grows over transparent
       let offset = (remaining / duration) * circumference;
       progress.style.strokeDashoffset = offset;
     }
