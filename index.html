@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Responsive Pomodoro Timer</title>
+  <title>Responsive Transparent Pomodoro Timer</title>
   <style>
     html, body {
       margin:0;
       padding:0;
       height:100%;
       overflow:hidden; /* no scroll bar */
-      background:#191919 !important; /* exact dark background */
+      background:transparent !important; /* force transparency */
     }
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
@@ -67,7 +67,7 @@
       <circle id="bg" cx="50" cy="50" r="45"/>
       <circle id="progress" cx="50" cy="50" r="45"/>
     </svg>
-    <div id="time">25:00</div>
+    <div id="time">50:00</div>
     <div class="button-group">
       <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
       <button onclick="resetTimer()">⏹</button>
@@ -75,11 +75,11 @@
   </div>
 
   <div class="controls">
-    <label>Min: <input type="number" id="minutesInput" value="25" min="1"></label>
+    <label>Min: <input type="number" id="minutesInput" value="50" min="1"></label>
   </div>
 
   <script>
-    let duration = 50 * 60;
+    let duration = 50 * 60; // default 50 minutes
     let remaining = duration;
     let timer = null;
     const progress = document.getElementById("progress");
@@ -123,7 +123,7 @@
       clearInterval(timer);
       timer = null;
       playPauseBtn.textContent = "▶";
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 25;
+      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
       remaining = duration;
       updateDisplay();
@@ -136,7 +136,7 @@
 
     // Auto-update when minutes input changes
     document.getElementById("minutesInput").addEventListener("input", () => {
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 25;
+      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
       remaining = duration;
       updateDisplay();
