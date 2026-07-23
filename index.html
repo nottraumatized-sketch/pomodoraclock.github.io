@@ -6,27 +6,34 @@
   <style>
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
-      height:100vh; background:linear-gradient(135deg,#1e1e1e,#2c2c2c); font-family:sans-serif; color:#00aaff;
+      height:100vh; background:linear-gradient(135deg,#1e1e1e,#2c2c2c);
+      font-family:sans-serif; color:#00aaff;
     }
     svg { transform:rotate(-90deg); }
-    circle { fill:none; stroke-width:10; }
+    circle { fill:none; stroke-width:12; }
     #bg { stroke:#333; }
     #progress { stroke:#a64dff; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
-    #time { position:absolute; font-size:1.8em; font-weight:bold; color:#00aaff; }
+    #time { position:absolute; font-size:2.5em; font-weight:bold; color:#00aaff; }
     .controls { margin-top:20px; }
-    button { margin:3px; padding:6px 10px; font-size:1em; cursor:pointer; border:none; background:none; color:#00aaff; }
+    button {
+      margin:5px; padding:8px 12px; font-size:2em; cursor:pointer;
+      border:none; background:none; color:#00aaff;
+    }
     button:hover { color:#a64dff; }
-    input { width:50px; text-align:center; margin-left:5px; background:#222; color:#fff; border:none; border-radius:4px; }
+    input {
+      width:60px; text-align:center; margin-left:5px;
+      background:#222; color:#fff; border:none; border-radius:4px;
+    }
   </style>
 </head>
 <body>
-  <div style="position:relative; width:200px; height:200px;">
-    <svg width="200" height="200">
-      <circle id="bg" cx="100" cy="100" r="90"/>
-      <circle id="progress" cx="100" cy="100" r="90"/>
+  <div style="position:relative; width:300px; height:300px;">
+    <svg width="300" height="300">
+      <circle id="bg" cx="150" cy="150" r="130"/>
+      <circle id="progress" cx="150" cy="150" r="130"/>
     </svg>
-    <div id="time" style="top:45%; left:50%; transform:translate(-50%,-50%);">25:00</div>
-    <div style="position:absolute; bottom:35%; left:50%; transform:translateX(-50%);">
+    <div id="time" style="top:40%; left:50%; transform:translate(-50%,-50%);">25:00</div>
+    <div style="position:absolute; bottom:30%; left:50%; transform:translateX(-50%);">
       <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
       <button onclick="resetTimer()">⏹</button>
     </div>
@@ -43,7 +50,7 @@
     const progress = document.getElementById("progress");
     const timeDisplay = document.getElementById("time");
     const playPauseBtn = document.getElementById("playPauseBtn");
-    const circumference = 2 * Math.PI * 90;
+    const circumference = 2 * Math.PI * 130;
     progress.style.strokeDasharray = circumference;
 
     function updateDisplay() {
@@ -91,6 +98,14 @@
       let alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
       alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
     }
+
+    // Auto-update when minutes input changes
+    document.getElementById("minutesInput").addEventListener("input", () => {
+      let minutes = parseInt(document.getElementById("minutesInput").value) || 25;
+      duration = minutes * 60;
+      remaining = duration;
+      updateDisplay();
+    });
 
     resetTimer(); // initialize
   </script>
