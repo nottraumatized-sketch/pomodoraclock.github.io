@@ -12,7 +12,7 @@
     }
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
-      height:100%; background:#000000; /* pure black */
+      height:100%; background:transparent; /* transparent background */
       font-family:sans-serif; color:#00aaff;
     }
     .timer-container {
@@ -24,12 +24,12 @@
     }
     svg { width:100%; height:100%; transform:rotate(-90deg); }
     circle { fill:none; stroke-width:4%; } /* stroke scales with size */
-    #bg { stroke:#222; }
+    #bg { stroke:#444; }
     #progress {
       stroke:#a64dff;
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
-      filter: drop-shadow(0 0 12px #a64dff); /* glow effect */
+      filter: drop-shadow(0 0 20px #a64dff); /* stronger glow effect */
     }
     #time {
       position:absolute;
