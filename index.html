@@ -131,8 +131,17 @@
     }
 
 function playSound() {
+  // Play your F1 radio sound
   let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
   alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
+
+  // Show desktop notification
+  if (Notification.permission === "granted") {
+    new Notification("⏱ Pomodoro finished!", {
+      body: "Time to take a break 🚦",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Stopwatch_icon.svg/1024px-Stopwatch_icon.svg.png"
+    });
+  }
 }
 
     document.getElementById("minutesInput").addEventListener("input", () => {
