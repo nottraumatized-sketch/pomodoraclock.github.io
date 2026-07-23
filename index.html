@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Timer (Circular Glow)</title>
+  <title>Pomodoro Timer (Circular Glow Fix)</title>
   <style>
     html, body {
       margin:0;
@@ -22,7 +22,21 @@
       max-width:500px; max-height:500px;
     }
 
-    /* Circular glow layer behind the ring */
+    svg { width:100%; height:100%; transform:rotate(-90deg); }
+    circle { fill:none; stroke-width:4%; }
+
+    /* Invisible base ring */
+    #bg { stroke:transparent; }
+
+    /* Purple ring with circular glow */
+    #progress {
+      stroke:#a64dff;
+      stroke-linecap:round;
+      transition:stroke-dashoffset 1s linear;
+      filter: drop-shadow(0 0 25px #a64dff) drop-shadow(0 0 50px #a64dff);
+    }
+
+    /* Circular glow aura behind the ring */
     .timer-container::before {
       content:"";
       position:absolute;
@@ -30,17 +44,6 @@
       border-radius:50%;
       background:radial-gradient(circle, rgba(166,77,255,0.25) 0%, transparent 70%);
       z-index:-1;
-    }
-
-    svg { width:100%; height:100%; transform:rotate(-90deg); }
-    circle { fill:none; stroke-width:4%; }
-    #bg { stroke:transparent; }   /* no base ring */
-    #progress {
-      stroke:#a64dff;             /* solid purple arc */
-      stroke-linecap:round;
-      transition:stroke-dashoffset 1s linear;
-      filter: blur(6px);          /* circular glow */
-      opacity: 0.9;
     }
 
     #time {
