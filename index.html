@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <title>Responsive Transparent Pomodoro Timer</title>
   <style>
+    /* Force transparency on all containers */
     html, body, iframe, embed, .notion-embed, .notion-page-content {
       margin:0;
       padding:0;
       height:100%;
       overflow:hidden;
-      background:transparent !important; /* full transparency */
+      background:transparent !important;
     }
+
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
       font-family:sans-serif; color:#00aaff;
@@ -29,7 +31,7 @@
       stroke:#a64dff;
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
-      filter: drop-shadow(0 0 20px #a64dff);
+      filter: drop-shadow(0 0 20px #a64dff); /* glow effect */
     }
 
     #time {
