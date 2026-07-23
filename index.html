@@ -9,7 +9,7 @@
       padding:0;
       height:100%;
       overflow:hidden;
-      background:#191919; /* dark background */
+      background:#191919;
     }
     body {
       display:flex; flex-direction:column; justify-content:center; align-items:center;
@@ -24,9 +24,9 @@
 
     svg { width:100%; height:100%; transform:rotate(-90deg); }
     circle { fill:none; stroke-width:4%; }
-    #bg { stroke:transparent; }   /* no base ring */
+    #bg { stroke:transparent; }
     #progress {
-      stroke:#a64dff;             /* solid purple arc */
+      stroke:#a64dff;
       stroke-linecap:round;
       transition:stroke-dashoffset 1s linear;
       filter: drop-shadow(0 0 20px #a64dff);
@@ -59,6 +59,16 @@
       background:#111; color:#fff; border:none; border-radius:4px;
       font-size:1em;
     }
+
+    /* Flashing effect */
+    .flash {
+      animation: flash 1s infinite;
+    }
+    @keyframes flash {
+      0% { color:#00aaff; }
+      50% { color:#ff4444; }
+      100% { color:#00aaff; }
+    }
   </style>
 </head>
 <body>
@@ -79,25 +89,20 @@
   </div>
 
   <script>
-    let duration = 50 * 60; // default 50 minutes
+    let duration = 50 * 60;
     let remaining = duration;
     let timer = null;
+    let alarmInterval = null;
     const progress = document.getElementById("progress");
     const timeDisplay = document.getElementById("time");
     const playPauseBtn = document.getElementById("playPauseBtn");
     const circumference = 2 * Math.PI * 45;
     progress.style.strokeDasharray = circumference;
 
-    // Ask for notification permission once
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
     function updateDisplay() {
       let minutes = Math.floor(remaining / 60);
       let seconds = remaining % 60;
       timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      // Arc starts full and disappears
       let offset = circumference - (remaining / duration) * circumference;
       progress.style.strokeDashoffset = offset;
     }
@@ -107,7 +112,7 @@
         remaining--;
         updateDisplay();
       } else {
-        playSound();
+        triggerAlarm();
         clearInterval(timer);
         timer = null;
         playPauseBtn.textContent = "▶";
@@ -128,6 +133,9 @@
     function resetTimer() {
       clearInterval(timer);
       timer = null;
+      clearInterval(alarmInterval);
+      alarmInterval = null;
+      timeDisplay.classList.remove("flash");
       playPauseBtn.textContent = "▶";
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
@@ -135,18 +143,21 @@
       updateDisplay();
     }
 
-    function playSound() {
-      // Play F1 radio sound hosted on GitHub
-      let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
-      alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
+    function triggerAlarm() {
+      // Start flashing
+      timeDisplay.classList.add("flash");
 
-      // Show desktop notification
-      if (Notification.permission === "granted") {
-        new Notification("⏱ Pomodoro finished!", {
-          body: "Time to take a break 🚦",
-          icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Stopwatch_icon.svg/1024px-Stopwatch_icon.svg.png"
-        });
-      }
+      // Play sound immediately and then every 5 seconds
+      playSound();
+      alarmInterval = setInterval(playSound, 5000);
+    }
+
+    function playSound() {
+      let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
+      alarm.play().catch(e => console.log("Audio blocked"));
+
+      // Repeat notification text (no permission prompt)
+      console.log("⏱ Pomodoro finished! Time to take a break 🚦");
     }
 
     document.getElementById("minutesInput").addEventListener("input", () => {
