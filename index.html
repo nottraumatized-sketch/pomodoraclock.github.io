@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Timer (Gradient Arc)</title>
+  <title>Pomodoro Timer (Disappearing Arc)</title>
   <style>
     html, body {
       margin:0;
@@ -98,8 +98,8 @@
       let minutes = Math.floor(remaining / 60);
       let seconds = remaining % 60;
       timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      // Inverted fill: purple grows over transparent
-      let offset = (remaining / duration) * circumference;
+      // Arc starts full and disappears
+      let offset = circumference - (remaining / duration) * circumference;
       progress.style.strokeDashoffset = offset;
     }
 
