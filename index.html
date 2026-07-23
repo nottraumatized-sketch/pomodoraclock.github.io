@@ -60,14 +60,23 @@
       font-size:1em;
     }
 
-    /* Flashing effect */
+    /* Flashing effect for text and ring */
     .flash {
-      animation: flash 1s infinite;
+      animation: flashText 1s infinite;
     }
-    @keyframes flash {
+    @keyframes flashText {
       0% { color:#00aaff; }
       50% { color:#ff4444; }
       100% { color:#00aaff; }
+    }
+
+    .ring-flash {
+      animation: flashRing 1s infinite;
+    }
+    @keyframes flashRing {
+      0% { stroke:#a64dff; filter: drop-shadow(0 0 20px #a64dff); }
+      50% { stroke:#ff4444; filter: drop-shadow(0 0 20px #ff4444); }
+      100% { stroke:#a64dff; filter: drop-shadow(0 0 20px #a64dff); }
     }
   </style>
 </head>
@@ -136,6 +145,7 @@
       clearInterval(alarmInterval);
       alarmInterval = null;
       timeDisplay.classList.remove("flash");
+      progress.classList.remove("ring-flash");
       playPauseBtn.textContent = "▶";
       let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
       duration = minutes * 60;
@@ -144,8 +154,9 @@
     }
 
     function triggerAlarm() {
-      // Start flashing
+      // Start flashing text and ring
       timeDisplay.classList.add("flash");
+      progress.classList.add("ring-flash");
 
       // Play sound immediately and then every 5 seconds
       playSound();
@@ -155,9 +166,6 @@
     function playSound() {
       let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
       alarm.play().catch(e => console.log("Audio blocked"));
-
-      // Repeat notification text (no permission prompt)
-      console.log("⏱ Pomodoro finished! Time to take a break 🚦");
     }
 
     document.getElementById("minutesInput").addEventListener("input", () => {
