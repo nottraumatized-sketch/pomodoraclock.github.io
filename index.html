@@ -2,161 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Timer (Solid Arc)</title>
+  <title>Pomodoro Timer</title>
   <style>
-    html, body {
-      margin:0;
-      padding:0;
-      height:100%;
-      overflow:hidden;
-      background:#191919; /* dark background */
-    }
     body {
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      font-family:sans-serif; color:#00aaff;
+      margin:0; padding:0; height:100%;
+      display:flex; justify-content:center; align-items:center;
+      background:#191919; color:#00aaff; font-family:sans-serif;
     }
-
-    .timer-container {
-      position:relative;
-      width:90vmin; height:90vmin;
-      max-width:500px; max-height:500px;
-    }
-
+    .timer-container { position:relative; width:300px; height:300px; }
     svg { width:100%; height:100%; transform:rotate(-90deg); }
-    circle { fill:none; stroke-width:4%; }
-    #bg { stroke:transparent; }   /* no base ring */
-    #progress {
-      stroke:#a64dff;             /* solid purple arc */
-      stroke-linecap:round;
-      transition:stroke-dashoffset 1s linear;
-      filter: drop-shadow(0 0 20px #a64dff);
-    }
-
+    circle { fill:none; stroke-width:10; }
+    #progress { stroke:#a64dff; stroke-linecap:round; filter:drop-shadow(0 0 10px #a64dff); }
     #time {
-      position:absolute;
-      top:40%; left:50%;
+      position:absolute; top:50%; left:50%;
       transform:translate(-50%,-50%);
-      font-size:8vmin;
-      font-weight:bold; color:#00aaff;
+      font-size:2em; font-weight:bold;
     }
-
-    .button-group {
-      position:absolute;
-      bottom:25%; left:50%;
-      transform:translateX(-50%);
-    }
-
-    button {
-      margin:5px; padding:8px 12px;
-      font-size:6vmin;
-      cursor:pointer; border:none; background:none; color:#00aaff;
-    }
-    button:hover { color:#a64dff; }
-
-    .controls { margin-top:15px; }
-    input {
-      width:70px; text-align:center; margin-left:5px;
-      background:#111; color:#fff; border:none; border-radius:4px;
-      font-size:1em;
+    .flash { animation: flash 1s infinite; }
+    @keyframes flash {
+      0% { color:#00aaff; }
+      50% { color:#ff4444; }
+      100% { color:#00aaff; }
     }
   </style>
 </head>
 <body>
   <div class="timer-container">
-    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-      <circle id="bg" cx="50" cy="50" r="45"/>
+    <svg viewBox="0 0 100 100">
       <circle id="progress" cx="50" cy="50" r="45"/>
     </svg>
-    <div id="time">50:00</div>
-    <div class="button-group">
-      <button id="playPauseBtn" onclick="toggleTimer()">▶</button>
-      <button onclick="resetTimer()">⏹</button>
-    </div>
+    <div id="time">25:00</div>
   </div>
-
-  <div class="controls">
-    <label>Min: <input type="number" id="minutesInput" value="50" min="1"></label>
-  </div>
+  <button onclick="toggleTimer()">▶</button>
+  <button onclick="resetTimer()">⏹</button>
 
   <script>
-    let duration = 50 * 60; // default 50 minutes
-    let remaining = duration;
-    let timer = null;
-    const progress = document.getElementById("progress");
-    const timeDisplay = document.getElementById("time");
-    const playPauseBtn = document.getElementById("playPauseBtn");
-    const circumference = 2 * Math.PI * 45;
-    progress.style.strokeDasharray = circumference;
+    let duration = 25*60, remaining = duration, timer=null, alarmInterval=null;
+    const timeDisplay=document.getElementById("time");
+    const progress=document.getElementById("progress");
+    const circumference=2*Math.PI*45;
+    progress.style.strokeDasharray=circumference;
 
-    // Ask for notification permission once
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
+    function updateDisplay(){
+      let m=Math.floor(remaining/60), s=remaining%60;
+      timeDisplay.textContent=`${m}:${s.toString().padStart(2,"0")}`;
+      let offset=circumference-(remaining/duration)*circumference;
+      progress.style.strokeDashoffset=offset;
     }
 
-    function updateDisplay() {
-      let minutes = Math.floor(remaining / 60);
-      let seconds = remaining % 60;
-      timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      // Arc starts full and disappears
-      let offset = circumference - (remaining / duration) * circumference;
-      progress.style.strokeDashoffset = offset;
+    function tick(){
+      if(remaining>0){ remaining--; updateDisplay(); }
+      else { triggerAlarm(); clearInterval(timer); timer=null; }
     }
 
-    function tick() {
-      if (remaining > 0) {
-        remaining--;
-        updateDisplay();
-      } else {
-        playSound();
-        clearInterval(timer);
-        timer = null;
-        playPauseBtn.textContent = "▶";
-      }
+    function toggleTimer(){
+      if(timer){ clearInterval(timer); timer=null; }
+      else { timer=setInterval(tick,1000); }
     }
 
-    function toggleTimer() {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-        playPauseBtn.textContent = "▶";
-      } else {
-        timer = setInterval(tick, 1000);
-        playPauseBtn.textContent = "⏸";
-      }
+    function resetTimer(){
+      clearInterval(timer); timer=null;
+      clearInterval(alarmInterval); alarmInterval=null;
+      timeDisplay.classList.remove("flash");
+      remaining=duration; updateDisplay();
     }
 
-    function resetTimer() {
-      clearInterval(timer);
-      timer = null;
-      playPauseBtn.textContent = "▶";
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
-      duration = minutes * 60;
-      remaining = duration;
-      updateDisplay();
+    function triggerAlarm(){
+      // Start flashing
+      timeDisplay.classList.add("flash");
+      // Play sound repeatedly every 5 seconds until reset
+      alarmInterval=setInterval(playSound,5000);
+      playSound(); // play immediately once
     }
 
-    function playSound() {
-      // Play F1 radio sound hosted on GitHub
-      let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
-      alarm.play().catch(e => console.log("Audio blocked, user interaction needed"));
-
-      // Show desktop notification
-      if (Notification.permission === "granted") {
-        new Notification("⏱ Pomodoro finished!", {
-          body: "Time to take a break 🚦",
-          icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Stopwatch_icon.svg/1024px-Stopwatch_icon.svg.png"
-        });
-      }
+    function playSound(){
+      let alarm=new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
+      alarm.play().catch(e=>console.log("Audio blocked"));
     }
 
-    document.getElementById("minutesInput").addEventListener("input", () => {
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
-      duration = minutes * 60;
-      remaining = duration;
-      updateDisplay();
-    });
-
-    resetTimer();
+    updateDisplay();
   </script>
 </body>
 </html>
