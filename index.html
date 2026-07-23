@@ -37,7 +37,7 @@
   <button onclick="resetTimer()">⏹</button>
 
   <script>
-    let duration = 25*60, remaining = duration, timer=null, alarmInterval=null;
+    let duration = 25*60, remaining = duration, timer=null;
     const timeDisplay=document.getElementById("time");
     const progress=document.getElementById("progress");
     const circumference=2*Math.PI*45;
@@ -52,7 +52,7 @@
 
     function tick(){
       if(remaining>0){ remaining--; updateDisplay(); }
-      else { triggerAlarm(); clearInterval(timer); timer=null; }
+      else { playSound(); timeDisplay.classList.add("flash"); clearInterval(timer); timer=null; }
     }
 
     function toggleTimer(){
@@ -62,17 +62,8 @@
 
     function resetTimer(){
       clearInterval(timer); timer=null;
-      clearInterval(alarmInterval); alarmInterval=null;
-      timeDisplay.classList.remove("flash");
       remaining=duration; updateDisplay();
-    }
-
-    function triggerAlarm(){
-      // Start flashing
-      timeDisplay.classList.add("flash");
-      // Play sound repeatedly every 5 seconds until reset
-      alarmInterval=setInterval(playSound,5000);
-      playSound(); // play immediately once
+      timeDisplay.classList.remove("flash");
     }
 
     function playSound(){
