@@ -97,85 +97,87 @@
     <label>Min: <input type="number" id="minutesInput" value="50" min="1"></label>
   </div>
 
-  <script>
-    let duration = 50 * 60;
-    let remaining = duration;
-    let timer = null;
-    let alarmInterval = null;
-    const progress = document.getElementById("progress");
-    const timeDisplay = document.getElementById("time");
-    const playPauseBtn = document.getElementById("playPauseBtn");
-    const circumference = 2 * Math.PI * 45;
-    progress.style.strokeDasharray = circumference;
+<script>
+  let duration = 50 * 60; // default 50 minutes
+  let remaining = duration;
+  let timer = null;
+  let alarmInterval = null;
+  let startTime = null;
+  const progress = document.getElementById("progress");
+  const timeDisplay = document.getElementById("time");
+  const playPauseBtn = document.getElementById("playPauseBtn");
+  const circumference = 2 * Math.PI * 45;
+  progress.style.strokeDasharray = circumference;
 
-    function updateDisplay() {
-      let minutes = Math.floor(remaining / 60);
-      let seconds = remaining % 60;
-      timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
-      let offset = circumference - (remaining / duration) * circumference;
-      progress.style.strokeDashoffset = offset;
-    }
+  function updateDisplay() {
+    let minutes = Math.floor(remaining / 60);
+    let seconds = remaining % 60;
+    timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
+    let offset = circumference - (remaining / duration) * circumference;
+    progress.style.strokeDashoffset = offset;
+  }
 
-    function tick() {
-      if (remaining > 0) {
-        remaining--;
-        updateDisplay();
-      } else {
-        triggerAlarm();
-        clearInterval(timer);
-        timer = null;
-        playPauseBtn.textContent = "▶";
-      }
-    }
+  function tick() {
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    remaining = Math.max(duration - elapsed, 0);
+    updateDisplay();
 
-    function toggleTimer() {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-        playPauseBtn.textContent = "▶";
-      } else {
-        timer = setInterval(tick, 1000);
-        playPauseBtn.textContent = "⏸";
-      }
-    }
-
-    function resetTimer() {
+    if (remaining <= 0) {
+      triggerAlarm();
       clearInterval(timer);
       timer = null;
-      clearInterval(alarmInterval);
-      alarmInterval = null;
-      timeDisplay.classList.remove("flash");
-      progress.classList.remove("ring-flash");
       playPauseBtn.textContent = "▶";
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
-      duration = minutes * 60;
-      remaining = duration;
-      updateDisplay();
     }
+  }
 
-    function triggerAlarm() {
-      // Start flashing text and ring
-      timeDisplay.classList.add("flash");
-      progress.classList.add("ring-flash");
-
-      // Play sound immediately and then every 5 seconds
-      playSound();
-      alarmInterval = setInterval(playSound, 5000);
+  function toggleTimer() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+      playPauseBtn.textContent = "▶";
+    } else {
+      // Adjust startTime so resume works correctly
+      startTime = Date.now() - (duration - remaining) * 1000;
+      timer = setInterval(tick, 1000);
+      playPauseBtn.textContent = "⏸";
     }
+  }
 
-    function playSound() {
-      let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
-      alarm.play().catch(e => console.log("Audio blocked"));
-    }
+  function resetTimer() {
+    clearInterval(timer);
+    timer = null;
+    clearInterval(alarmInterval);
+    alarmInterval = null;
+    timeDisplay.classList.remove("flash");
+    progress.classList.remove("ring-flash");
+    playPauseBtn.textContent = "▶";
+    let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
+    duration = minutes * 60;
+    remaining = duration;
+    updateDisplay();
+  }
 
-    document.getElementById("minutesInput").addEventListener("input", () => {
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
-      duration = minutes * 60;
-      remaining = duration;
-      updateDisplay();
-    });
+  function triggerAlarm() {
+    timeDisplay.classList.add("flash");
+    progress.classList.add("ring-flash");
+    playSound();
+    alarmInterval = setInterval(playSound, 5000);
+  }
 
-    resetTimer();
-  </script>
+  function playSound() {
+    let alarm = new Audio("https://raw.githubusercontent.com/nottraumatized-sketch/pomodoraclock.github.io/refs/heads/main/f1%20radio.mp3");
+    alarm.play().catch(e => console.log("Audio blocked"));
+  }
+
+  document.getElementById("minutesInput").addEventListener("input", () => {
+    let minutes = parseInt(document.getElementById("minutesInput").value) || 50;
+    duration = minutes * 60;
+    remaining = duration;
+    updateDisplay();
+  });
+
+  resetTimer();
+</script>
 </body>
 </html>
